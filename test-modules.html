@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Modules</title>
+<style>
+body { font-family: Arial; padding: 20px; background: #0a0f1e; color: #fff; }
+.result { background: #1a1f2e; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #00d4ff; }
+.success { border-color: #00ff88; }
+.error { border-color: #fe2c55; }
+</style>
+</head>
+<body>
+<h1>🧪 اختبار تحميل الـ Modules</h1>
+
+<div id="results"></div>
+
+<hr style="margin: 30px 0; border-color: #333;">
+
+<h2>🤖 اختبار AI Provider UI:</h2>
+<div id="ai-provider-container"></div>
+
+<hr style="margin: 30px 0; border-color: #333;">
+
+<h2>📊 اختبار Pixels UI:</h2>
+<div id="pixels-container"></div>
+
+<hr style="margin: 30px 0; border-color: #333;">
+
+<h2>📄 اختبار PDF Export:</h2>
+<button onclick="showPDFExportDialog()" style="padding: 10px 20px; font-size: 14px; cursor: pointer;">
+  📄 تصدير PDF
+</button>
+
+<!-- Load all modules -->
+<script src="multi-ai.js"></script>
+<script src="pixels.js"></script>
+<script src="pdf-export.js"></script>
+
+<script>
+const results = document.getElementById('results');
+
+function addResult(name, status, msg) {
+  const div = document.createElement('div');
+  div.className = 'result ' + (status ? 'success' : 'error');
+  div.innerHTML = `<strong>${status ? '✅' : '❌'} ${name}</strong><br>${msg}`;
+  results.appendChild(div);
+}
+
+// Test modules
+setTimeout(function() {
+  // Test multi-ai.js
+  if (typeof initAIProviderUI === 'function') {
+    addResult('multi-ai.js', true, 'تم تحميل ملف multi-ai.js بنجاح');
+    try {
+      initAIProviderUI();
+      const container = document.getElementById('ai-provider-container');
+      if (container && container.innerHTML.trim() !== '') {
+        addResult('AI Provider UI', true, 'تم إنشاء واجهة مزود AI بنجاح');
+      } else {
+        addResult('AI Provider UI', false, 'الواجهة فارغة أو لم تُنشأ');
+      }
+    } catch(e) {
+      addResult('AI Provider UI', false, 'خطأ: ' + e.message);
+    }
+  } else {
+    addResult('multi-ai.js', false, 'الملف غير محمّل أو initAIProviderUI غير موجود');
+  }
+
+  // Test pixels.js
+  if (typeof initPixelsUI === 'function') {
+    addResult('pixels.js', true, 'تم تحميل ملف pixels.js بنجاح');
+    try {
+      initPixelsUI();
+      const container = document.getElementById('pixels-container');
+      if (container && container.innerHTML.trim() !== '') {
+        addResult('Pixels UI', true, 'تم إنشاء واجهة Pixels بنجاح');
+      } else {
+        addResult('Pixels UI', false, 'الواجهة فارغة أو لم تُنشأ');
+      }
+    } catch(e) {
+      addResult('Pixels UI', false, 'خطأ: ' + e.message);
+    }
+  } else {
+    addResult('pixels.js', false, 'الملف غير محمّل أو initPixelsUI غير موجود');
+  }
+
+  // Test pdf-export.js
+  if (typeof showPDFExportDialog === 'function') {
+    addResult('pdf-export.js', true, 'تم تحميل ملف pdf-export.js بنجاح - الزر يعمل');
+  } else {
+    addResult('pdf-export.js', false, 'الملف غير محمّل أو showPDFExportDialog غير موجود');
+  }
+
+  // Add fake leads for PDF test
+  window.leads = [
+    { name: 'عميل تجريبي', phone: '0555123456', email: 'test@test.com', status: 'new', services: ['TikTok Ads'], price: 5000, cost: 500, createdAt: Date.now() }
+  ];
+
+}, 500);
+</script>
+
+</body>
+</html>
